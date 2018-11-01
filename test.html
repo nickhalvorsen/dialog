@@ -3,6 +3,8 @@
 
 <style>
 #dialog {
+    padding: 2em;
+    border: 1px solid #000;
     width: 30em;
     height: 20em;
     margin: 0 auto;
@@ -18,12 +20,16 @@
     <div class="dialog-options" v-if="flags.showChoices">
         <ol>
             <li v-for="choice in choices">
-                {{ choice.text }}
+                <span class="dialog-choice" v-on:click="choiceClicked(choice.id)">
+                    {{ choice.text }}
+                </span>
             </li>
         </ol>
     </div>
     <div class="dialog-continue" v-if="flags.showContinue">
-        continue
+        <span v-on:click="continueClicked()">
+            continue
+        </span>
     </div>
 </div>
 
@@ -48,8 +54,8 @@ var app = new Vue({
             this.flags.showChoices = this.choices !== null && this.choices.length > 0
             this.flags.showContinue = !this.flags.showChoices
       },
-      choiceClicked: function() {
-            console.log('choice clicked')
+      choiceClicked: function(choiceId) {
+            console.log('choice clicked ' + choiceId)
       },
       continueClicked: function() {
           console.log('continue clicked')
@@ -57,12 +63,18 @@ var app = new Vue({
   }
 })
 
-var testPayload = {
+/*var testPayload = {
     message: "hello world",
     choices: [
-        { text: "first option" },
-        { text: 'second option'}
+        { id: 1, text: "first option" },
+        { id: 2, text: 'second option'}
     ]
+}*/
+
+
+var testPayload = {
+    message: "hello world",
+    choices: []
 }
 
 app.displayMessage(testPayload)
