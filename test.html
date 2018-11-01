@@ -1,0 +1,70 @@
+<!-- development version, includes helpful console warnings -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+<style>
+#dialog {
+    width: 30em;
+    height: 20em;
+    margin: 0 auto;
+}
+
+</style>
+
+<div id="dialog">
+    <div class="dialog-message">
+        {{ message }}
+    </div>
+    <hr/>
+    <div class="dialog-options" v-if="flags.showChoices">
+        <ol>
+            <li v-for="choice in choices">
+                {{ choice.text }}
+            </li>
+        </ol>
+    </div>
+    <div class="dialog-continue" v-if="flags.showContinue">
+        continue
+    </div>
+</div>
+
+
+
+<script>
+
+var app = new Vue({
+  el: '#dialog',
+  data: {
+    message: '',
+    choices: [],
+    flags : {
+        showChoices: false,
+        showContinue: false
+    }
+  },
+  methods: {
+      displayMessage: function(messagePayload) {
+            this.message = messagePayload.message
+            this.choices = messagePayload.choices
+            this.flags.showChoices = this.choices !== null && this.choices.length > 0
+            this.flags.showContinue = !this.flags.showChoices
+      },
+      choiceClicked: function() {
+            console.log('choice clicked')
+      },
+      continueClicked: function() {
+          console.log('continue clicked')
+      }
+  }
+})
+
+var testPayload = {
+    message: "hello world",
+    choices: [
+        { text: "first option" },
+        { text: 'second option'}
+    ]
+}
+
+app.displayMessage(testPayload)
+
+</script>
