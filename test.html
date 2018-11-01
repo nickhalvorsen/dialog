@@ -36,8 +36,6 @@
     </div>
 </div>
 
-ADD THIS https://vuejs.org/v2/guide/transitions.html#JavaScript-Hooks
-
 <script>
 
 var app = new Vue({
@@ -54,8 +52,9 @@ var app = new Vue({
   methods: {
       displayMessage: function(messagePayload) {
           this.message = ''
+          this.showActions = false
           var texter = new Texter('dialog-message');
-          texter.display(messagePayload.message, 40, () => this.displayActions(messagePayload.choices));
+          texter.display(messagePayload.message, 40, () => this.displayActions());
             //this.message = messagePayload.message
             this.choices = messagePayload.choices
       },
@@ -65,7 +64,7 @@ var app = new Vue({
       continueClicked: function() {
           console.log('continue clicked')
       },
-      displayActions(choices) {
+      displayActions() {
             this.flags.showActions = true
             this.flags.showActionOptions = this.choices !== null && this.choices.length > 0
             this.flags.showActionContinue = !this.flags.showActionOptions
