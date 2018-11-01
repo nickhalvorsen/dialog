@@ -1,5 +1,6 @@
 <!-- development version, includes helpful console warnings -->
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="texter.js"></script>
 
 <style>
 #dialog {
@@ -13,23 +14,25 @@
 </style>
 
 <div id="dialog">
-    <div class="dialog-message">
+    <div id="dialog-message" class="dialog-message">
         {{ message }}
     </div>
     <hr/>
-    <div class="dialog-options" v-if="flags.showChoices">
-        <ol>
-            <li v-for="choice in choices">
-                <span class="dialog-choice" v-on:click="choiceClicked(choice.id)">
-                    {{ choice.text }}
-                </span>
-            </li>
-        </ol>
-    </div>
-    <div class="dialog-continue" v-if="flags.showContinue">
-        <span v-on:click="continueClicked()">
-            continue
-        </span>
+    <div v-if="flags.showActions">
+        <div class="dialog-options" v-if="flags.showActionOptions">
+            <ol>
+                <li v-for="choice in choices">
+                    <span class="dialog-choice" v-on:click="choiceClicked(choice.id)">
+                        {{ choice.text }}
+                    </span>
+                </li>
+            </ol>
+        </div>
+        <div class="dialog-continue" v-if="flags.showActionContinue">
+            <span v-on:click="continueClicked()">
+                continue
+            </span>
+        </div>
     </div>
 </div>
 
@@ -43,40 +46,52 @@ var app = new Vue({
     message: '',
     choices: [],
     flags : {
-        showChoices: false,
-        showContinue: false
+        showActions: false,
+        showActionOptions: false,
+        showActionContinue: false
     }
   },
   methods: {
       displayMessage: function(messagePayload) {
-            this.message = messagePayload.message
+          this.message = ''
+          var texter = new Texter('dialog-message');
+          texter.display(messagePayload.message, 40, () => this.displayActions(messagePayload.choices));
+            //this.message = messagePayload.message
             this.choices = messagePayload.choices
-            this.flags.showChoices = this.choices !== null && this.choices.length > 0
-            this.flags.showContinue = !this.flags.showChoices
       },
       choiceClicked: function(choiceId) {
             console.log('choice clicked ' + choiceId)
       },
       continueClicked: function() {
           console.log('continue clicked')
+      },
+      displayActions(choices) {
+            this.flags.showActions = true
+            this.flags.showActionOptions = this.choices !== null && this.choices.length > 0
+            this.flags.showActionContinue = !this.flags.showActionOptions
+
       }
   }
 })
 
-/*var testPayload = {
-    message: "hello world",
+
+
+var payload1 = {
+    message: "what would you like to get done today?",
     choices: [
         { id: 1, text: "first option" },
         { id: 2, text: 'second option'}
     ]
-}*/
+}
 
 
-var testPayload = {
+var payload2 = {
     message: "hello world",
     choices: []
 }
 
-app.displayMessage(testPayload)
+var payloads = [payload1,payload2]
+
+app.displayMessage(payload1)
 
 </script>
